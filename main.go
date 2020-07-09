@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	flags "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/apps/v1"
 	core_v1 "k8s.io/api/core/v1"
@@ -213,6 +213,8 @@ func main() {
 	// Handle termination
 	stopCh := make(chan struct{})
 	defer close(stopCh)
+	podStopCh := make(chan struct{})
+	defer close(podStopCh)
 	handler := func(node *core_v1.Node) {
 		isHandling.Lock()
 		defer isHandling.Unlock()
@@ -227,7 +229,6 @@ func main() {
 		if err != nil {
 			logrus.Fatalf("Error creating pod watcher: %v", err)
 		}
-		podStopCh := make(chan struct{})
 		go podInformer.Run(podStopCh)
 	}
 
@@ -240,7 +241,11 @@ func main() {
 	sigterm := make(chan os.Signal, 1)
 	signal.Notify(sigterm, syscall.SIGTERM)
 	signal.Notify(sigterm, syscall.SIGINT)
-	<-sigterm
+
+	select {
+		case <-sigterm:
+		case <-stopCh:
+	}
 
 	logrus.Infof("Received SIGTERM or SIGINT. Shutting down.")
 }

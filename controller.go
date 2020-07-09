@@ -14,7 +14,7 @@ import (
 )
 
 type Controller struct {
-	Clientset *kubernetes.Clientset
+	clientSet *kubernetes.Clientset
 	informer  cache.Controller
 	indexer   cache.Indexer
 	lister    listers_v1.NodeLister

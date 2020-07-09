@@ -4,7 +4,6 @@ package config
 // Ops represents the commandline/environment options for the program
 type Ops struct {
 	LogLevel            string `long:"log-level" env:"LOG_LEVEL" description:"Log level" default:"info"`
-	PollPeriod          string `long:"poll-period" env:"POLL_PERIOD" description:"Check for deletion every period (5s, 3m, 1h, ...)" default:"15s"`
 	NodeTaint           string `long:"node-taint" env:"NODE_TAINT" description:"The node taints that's going to remove."`
 	DaemonSetAnnotation string `long:"daemonset-annotation" env:"DAEMONSET_ANNOTATION" description:"The annotation of the daemonset to watch"`
 }

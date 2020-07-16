@@ -17,6 +17,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	clientretry "k8s.io/client-go/util/retry"
 	taintutils "k8s.io/kubernetes/pkg/util/taints"
+	"net/http"
 	"nodetaint/config"
 	"os"
 	"os/signal"
@@ -75,11 +76,14 @@ func checkDSStatus(node *core_v1.Node, opts config.Ops) (bool, error) {
 	isHandling.Lock()
 	defer isHandling.Unlock()
 
-	// get all the pods scheduled on the nodes
-	if len((*podStore[node.Name]).List()) == 0 {
+	if _, ok := podStore[node.Name]; !ok {
+		return false, nil
+	}
+	if podStore[node.Name] == nil || len((*podStore[node.Name]).List()) == 0 {
 		return false, nil
 	}
 
+	// get all the pods scheduled on the nodes
 	readyPods := make(map[string]int)
 	for _, obj := range (*podStore[node.Name]).List() {
 		if pod, ok := obj.(*core_v1.Pod); ok {
@@ -225,6 +229,11 @@ func main() {
 
 	// Handle termination
 	stopCh := make(chan struct{})
+	srv := &http.Server{
+		Addr: opts.BindAddr,
+	}
+
+	defer srv.Shutdown(context.Background())
 	defer close(stopCh)
 
 	dsHandler := func(ops string, ds *v1.DaemonSet) {
@@ -300,7 +309,6 @@ func main() {
 		if _, ok := podStore[node.Name]; ok {
 			return
 		}
-		logrus.Infof("node:%v has required taint", node.Name)
 
 		go func() {
 			// Handle termination
@@ -333,6 +341,18 @@ func main() {
 		}
 	}
 	logrus.Infof("Number of required daemonsets is %v", len(dsList))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "OK\n")
+	})
+	http.HandleFunc("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "OK\n")
+	})
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			logrus.Errorf("Error serving HTTP at %v: %v", opts.BindAddr, err)
+		}
+	}()
 
 	sigterm := make(chan os.Signal, 1)
 	signal.Notify(sigterm, syscall.SIGTERM)

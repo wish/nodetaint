@@ -9,6 +9,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
+	taintutils "k8s.io/kubernetes/pkg/util/taints"
 	"time"
 )
 
@@ -48,7 +49,6 @@ func NewController(handler *func(*core_v1.Node), dsHandler *func(ops string, ds 
 		clientset.CoreV1().RESTClient(),
 		"nodes",
 		meta_v1.NamespaceAll,
-		//TODO: only get the tainted nodes
 		fields.Everything(),
 	)
 
@@ -58,12 +58,12 @@ func NewController(handler *func(*core_v1.Node), dsHandler *func(ops string, ds 
 		5*time.Minute, // Do a full update every 5 minutes, making extra sure nothing was missed
 		cache.ResourceEventHandlerFuncs{
 			AddFunc: func(obj interface{}) {
-				if node, ok := obj.(*core_v1.Node); ok {
+				if node, ok := obj.(*core_v1.Node); ok && taintutils.TaintExists(node.Spec.Taints, notReadyTaint) {
 					(*handler)(node)
 				}
 			},
 			UpdateFunc: func(oldObj, newObj interface{}) {
-				if node, ok := newObj.(*core_v1.Node); ok {
+				if node, ok := newObj.(*core_v1.Node); ok && taintutils.TaintExists(node.Spec.Taints, notReadyTaint) {
 					(*handler)(node)
 				}
 			},
@@ -75,7 +75,6 @@ func NewController(handler *func(*core_v1.Node), dsHandler *func(ops string, ds 
 		clientset.AppsV1().RESTClient(),
 		"daemonsets",
 		meta_v1.NamespaceAll,
-		//TODO: only get the annotated ds
 		fields.Everything(),
 	)
 

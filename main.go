@@ -72,25 +72,6 @@ func getClientset() (*kubernetes.Clientset, error) {
 	return clientset, nil
 }
 
-func copyMap(arch string) []string {
-	var requiredDS []string
-	if arch == "arm64" {
-		for k := range dsList {
-			if k != "aws-node" {
-				requiredDS = append(requiredDS, k)
-			}
-		}
-		return requiredDS
-	}
-
-	for k := range dsList {
-		if k != "aws-node-arm64" {
-			requiredDS = append(requiredDS, k)
-		}
-	}
-	return requiredDS
-}
-
 func checkDSStatus(node *core_v1.Node, opts config.Ops) (bool, error) {
 	isHandling.Lock()
 	defer isHandling.Unlock()
@@ -101,9 +82,6 @@ func checkDSStatus(node *core_v1.Node, opts config.Ops) (bool, error) {
 	if podStore[node.Name] == nil || len((*podStore[node.Name]).List()) == 0 {
 		return false, nil
 	}
-
-	// In our case, for aws-node and aws-node-arm64, we just need one or another. Based on the node's arch, we resize the dsList
-	requiredDS := copyMap(node.Status.NodeInfo.Architecture)
 
 	// get all the pods scheduled on the nodes
 	readyPods := make(map[string]int)
@@ -136,7 +114,7 @@ func checkDSStatus(node *core_v1.Node, opts config.Ops) (bool, error) {
 		}
 	}
 
-	if len(readyPods) != len(requiredDS) {
+	if len(readyPods) != len(dsList) {
 		return false, nil
 	}
 

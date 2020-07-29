@@ -1,6 +1,10 @@
 # nodetaint
 
-Taint controller for nodes in k8s cluster. 
+Controller to manage taints for nodes in a k8s cluster 
+
+## What the problem is
+
+Usually there are some system critical daemonset pods(e.g. network setting) that needs to be running on a node before it can take any other pods. However k8s doesn't guarantee any ordering in its node startup. This will lead to your worker pods fail as the node is not properly set up.
 
 ## How it works
 

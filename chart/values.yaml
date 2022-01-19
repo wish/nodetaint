@@ -1,0 +1,62 @@
+# Default values for nodetaint.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  registry: quay.io/
+  repository: wish/nodetaint
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.0.3"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+config:
+  # The level of log detail
+  LOG_LEVEL: info
+  # The startup taint to put on node.
+  NODE_TAINT: nodetaint/blocking
+  # The annotation of required daemonset.
+  DAEMONSET_ANNOTATION: "nodetaint/crucial"
+
+podDisruptionBudget:
+  maxUnavailable: 1
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

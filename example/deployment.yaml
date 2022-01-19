@@ -1,0 +1,81 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "labels": {
+      "app": "nodetaint"
+    },
+    "name": "nodetaint",
+    "namespace": "nodetaint"
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "nodetaint"
+      }
+    },
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": 0,
+        "maxUnavailable": 1
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "nodetaint"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "args": [
+                "--log-level=debug",
+                "--node-taint=nodetaint.wish.com/notready",
+                "--daemonset-annotation=daemonset.wish.com/system-critical-ds"
+            ],
+            "command": [
+                "/root/nodetaint"
+            ],
+            "image": "quay.io/wish/nodetaint:v0.0.2",
+            "livenessProbe": {
+              "httpGet": {
+                "path": "/",
+                "port": 9797
+              }
+            },
+            "name": "nodetaint",
+            "ports": [
+              {
+                "containerPort": 9797
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "200m",
+                "memory": "200Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "100Mi"
+              }
+            }
+          }
+        ],
+        "dnsPolicy": "Default",
+        "nodeSelector": {
+          "kops.k8s.io/instancegroup": "nodetaint"
+        },
+        "serviceAccountName": "nodetaint",
+        "tolerations": [
+          {
+            "effect": "NoSchedule",
+            "key": "nodetaint.wish.com/notready",
+            "operator": "Exists"
+          }
+        ]
+      }
+    }
+  }
+}

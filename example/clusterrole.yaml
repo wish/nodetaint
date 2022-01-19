@@ -1,0 +1,50 @@
+{
+  "apiVersion": "rbac.authorization.k8s.io/v1",
+  "kind": "ClusterRole",
+  "metadata": {
+    "name": "nodetaint"
+  },
+  "rules": [
+    {
+      "apiGroups": [
+          ""
+      ],
+      "resources": [
+          "nodes"
+      ],
+      "verbs": [
+          "update",
+          "patch",
+          "watch",
+          "list",
+          "get"
+      ]
+    },
+    {
+      "apiGroups": [
+          ""
+      ],
+      "resources": [
+          "pods"
+      ],
+      "verbs": [
+          "watch",
+          "list",
+          "get"
+      ]
+    },
+    {
+      "apiGroups": [
+          "apps"
+      ],
+      "resources": [
+          "daemonsets"
+      ],
+      "verbs": [
+          "watch",
+          "list",
+          "get"
+      ]
+    }
+  ]
+}

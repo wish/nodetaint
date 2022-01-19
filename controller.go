@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/apps/v1"
 	core_v1 "k8s.io/api/core/v1"
@@ -10,7 +12,6 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	taintutils "k8s.io/kubernetes/pkg/util/taints"
-	"time"
 )
 
 type Controller struct {

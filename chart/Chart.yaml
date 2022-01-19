@@ -1,0 +1,8 @@
+apiVersion: v2
+name: nodetaint
+description: A Helm chart for nodetaint controller
+type: application
+
+version: 0.1.0
+
+appVersion: "v0.0.3"

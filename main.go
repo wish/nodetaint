@@ -4,6 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"nodetaint/config"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+	"time"
+
 	"github.com/jessevdk/go-flags"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/apps/v1"
@@ -17,13 +25,6 @@ import (
 	"k8s.io/client-go/tools/cache"
 	clientretry "k8s.io/client-go/util/retry"
 	taintutils "k8s.io/kubernetes/pkg/util/taints"
-	"net/http"
-	"nodetaint/config"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"time"
 )
 
 var (
@@ -253,6 +254,7 @@ func main() {
 		case "delete":
 			delete(dsList, ds.Name)
 		}
+		logrus.Debugf("Number of required daemonsets is %v", len(dsList))
 	}
 
 	podHandler := func(pod *core_v1.Pod, node *core_v1.Node, podStopChan chan struct{}) {

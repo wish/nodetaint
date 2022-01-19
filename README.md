@@ -8,7 +8,8 @@ Usually there are some system critical daemonsets (e.g. CNI, DNS, etc.) that nee
 
 ## How it works
 
-The controller solves this problem by removing a pre-configured taint from a node after annotated daemonsets are running on the node. To achieve this, you need to configure your cluster to launch nodes with the desired taint. The controller then determines, through annotation, which daemonsets should be running on a node prior to workload pods. It monitors for these daemonset pods to be Ready before removing the configured taint.
+The controller solves this problem by removing a pre-configured taint from a node after annotated daemonsets are running on the node. To achieve this, you need to configure your cluster to launch nodes with the desired taint: configure `kubelet` to start with `--register-with-taints` option.
+ The controller then determines, through annotation, which daemonsets should be running on a node prior to workload pods. It monitors for these daemonset pods to be Ready before removing the configured taint.
 
 ## Configuration
 

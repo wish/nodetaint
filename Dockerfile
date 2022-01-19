@@ -14,6 +14,7 @@ RUN go mod download
 
 COPY . /go/src/github.com/wish/nodetaint/
 
+RUN go mod tidy
 # Build controller
 RUN CGO_ENABLED=0 GOARCH=${TARGETARCH} GOOS=${TARGETOS} go build -o . -a -installsuffix cgo .
 

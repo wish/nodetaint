@@ -1,0 +1,15 @@
+{{- if .Values.podDisruptionBudget }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "nodetaint.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nodetaint.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+        app: nodetaint
+        app.kubernetes.io/name: {{ include "nodetaint.fullname" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end }}

@@ -1,0 +1,58 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.description" . }}
+
+## How to install this chart
+
+Chart can be verified using the following commands:
+```console
+curl https://helm.kube.jamf.build/helmsigner.gpg -o helmsigner.gpg
+helm pull helm-kube/{{ template "chart.name" . }} --verify --keyring helmsigner.gpg
+```
+
+Add helm.kube.jamf.build chart repo:
+
+```console
+helm repo add helm-kube https://helm.kube.jamf.build/
+```
+
+A simple install with default values:
+
+```console
+helm install helm-kube/{{ template "chart.name" . }}
+```
+
+To install the chart with the release name `my-release`:
+
+```console
+helm install my-release helm-kube/{{ template "chart.name" . }}
+```
+
+To install with some set values:
+
+```console
+helm install my-release helm-kube/{{ template "chart.name" . }} --set values_key1=value1 --set values_key2=value2
+```
+
+To install with custom values file:
+
+```console
+helm install my-release helm-kube/{{ template "chart.name" . }} -f values.yaml
+```
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+## How to build and release this chart
+
+Chart is built and released on each merge to `main` branch.
+
+Release version is stored in `Chart.yaml` and should be bumped with each release
+
+Before pushing your commits, make sure to regenerate docs with:
+```console
+docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest --template-files=ci/README.md.gotmpl
+```

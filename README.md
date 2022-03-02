@@ -21,7 +21,7 @@ Flag | Environment Variable | Type | Default | Required | Description
 ---- | -------------------- | ---- | ------- | -------- | -----------
 `log-level` | `LOG_LEVEL` | `string` | `info` | no | The level of log detail.
 `bind-address` | `BIND_ADDRESS` | `string` | `:9797` | no | The address for binding listener.
-`node-taint` | `NODE_TAINT` | `string` | | yes |  The startup taint to put on node.
-`daemonset-annotation` | `DAEMONSET_ANNOTATION` | `string` | | yes | The annotation of required daemonset.
- 
- 
+`node-taint` | `NODE_TAINT` | `string` | | yes |  The startup taint to remove from node.
+`daemonset-annotation` | `DAEMONSET_ANNOTATION` | `string` | | yes | The annotations of required daemonset, eg. key1:val1,key2:val2,key3.
+`daemonset-label` | `DAEMONSET_LABEL` | `string` | | yes | The labels of required daemonset, eg. key1:val1,key2:val2,key3.
+

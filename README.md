@@ -11,6 +11,8 @@ Usually there are some system critical daemonsets (e.g. CNI, DNS, etc.) that nee
 The controller solves this problem by removing a pre-configured taint from a node after annotated daemonsets are running on the node. To achieve this, you need to configure your cluster to launch nodes with the desired taint: configure `kubelet` to start with `--register-with-taints` option.
  The controller then determines, through annotation, which daemonsets should be running on a node prior to workload pods. It monitors for these daemonset pods to be Ready before removing the configured taint.
 
+Note: If you are using the k8s cluster autoscaler you should align the [`ignore-taint`](https://github.com/kubernetes/autoscaler/blob/8ba18537807fb15a074d3587528157d441ac4389/cluster-autoscaler/main.go#L181) option with the same taints as registered on the kubelet. This will ensure the cluster autoscaler considers those nodes as "ready" for the purposes of scaling up/down.
+
 ## Configuration
 
 ### Command-line
@@ -23,5 +25,3 @@ Flag | Environment Variable | Type | Default | Required | Description
 `bind-address` | `BIND_ADDRESS` | `string` | `:9797` | no | The address for binding listener.
 `node-taint` | `NODE_TAINT` | `string` | | yes |  The startup taint to put on node.
 `daemonset-annotation` | `DAEMONSET_ANNOTATION` | `string` | | yes | The annotation of required daemonset.
- 
- 

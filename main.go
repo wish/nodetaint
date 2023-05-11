@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"nodetaint/config"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
+
+	"nodetaint/config"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/sirupsen/logrus"

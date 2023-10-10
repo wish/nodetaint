@@ -1,40 +1,45 @@
 # nodetaint
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.3](https://img.shields.io/badge/AppVersion-v0.0.3-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.3](https://img.shields.io/badge/AppVersion-v0.0.3-informational?style=flat-square)
 
 A Helm chart for nodetaint controller
 
 ## How to install this chart
 
+Chart can be verified using the following commands:
+```console
+curl https://helm.kube.jamf.build/helmsigner.gpg -o helmsigner.gpg
+helm pull helm-kube/nodetaint --verify --keyring helmsigner.gpg
+```
 
-Add wish.github.io/nodetaint chart repo:
+Add helm.kube.jamf.build chart repo:
 
 ```console
-helm repo add nodetaint https://wish.github.io/nodetaint
+helm repo add helm-kube https://helm.kube.jamf.build/
 ```
 
 A simple install with default values:
 
 ```console
-helm install nodetaint/nodetaint
+helm install helm-kube/nodetaint
 ```
 
 To install the chart with the release name `my-release`:
 
 ```console
-helm install my-release nodetaint/nodetaint
+helm install my-release helm-kube/nodetaint
 ```
 
 To install with some set values:
 
 ```console
-helm install my-release nodetaint/nodetaint --set values_key1=value1 --set values_key2=value2
+helm install my-release helm-kube/nodetaint --set values_key1=value1 --set values_key2=value2
 ```
 
 To install with custom values file:
 
 ```console
-helm install my-release nodetaint/nodetaint -f values.yaml
+helm install my-release helm-kube/nodetaint -f values.yaml
 ```
 
 ## Values
